@@ -131,19 +131,19 @@
 
 # 구현:
 
-서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 808n 이다)
+서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 8084 이다)
 
 ```
-cd app
+cd rent
 mvn spring-boot:run
 
-cd pay
+cd book
 mvn spring-boot:run 
 
-cd store
+cd billing
 mvn spring-boot:run  
 
-cd customer
+cd mypage
 mvn spring-boot:run  
 ```
 

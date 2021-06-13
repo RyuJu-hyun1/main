@@ -5,13 +5,15 @@
 
 기능적 요구사항
 
-1. 사용자가 책 대여를 신청한다.
-2. 책 재고가 1 이상일 때 재고가 1개 감소하고 책 대여가 완료된다.
-3. 책 대여가 완료되면 청구서가 등록된다.
-4. 사용자가 책을 반납한다.
-5. 책 재고가 1개 증가한다.
-6. 결재가 완료된다.
-7. 사용자는 책 대여와 과금 이력을 조회한다.
+1. 책 대여
+   1) 사용자가 책 대여를 신청한다.
+   2) 책 재고를 체크하고 재고를 1개 감소한다.
+   3) 청구서가 등록된다.
+2. 책 반납
+   1) 사용자가 책을 반납한다.
+   2) 책 재고가 1개 증가한다.
+   3) 결재가 완료된다.
+3. 사용자는 책 대여와 과금 이력을 조회한다.
 
 비기능적 요구사항
 
@@ -22,7 +24,7 @@
 2. 장애격리
    1)과금 관리 서비스가 수행되지 않더라도 365일 24시간 책을 대여할 수 있어야 한다. -> Async(event-driven) , Eventual consistency
    2)과금 관리 서비스가 수행되지 않더라도 365일 24시간 책을 반납할 수 있어야 한다. -> Async(event-driven) , Eventual consistency
-   3)책 관리 시스템이 과중되면 대여를 잠시 동안 받지 않고 대여를 잠시 후에 하도록 유도한다. -> Circuit breaker, fallback
+   3)책 관리 시스템이 과중되면 대여를 잠시 동안 받지 않고 대여를 잠시 후에 하도록 유도한다. -> Circuit breaker
 
 3. 성능
    사용자가 대여와 청구 이력을 조회 할 수 있도록 성능을 고려하여 별도의 view로 구성한다.> CQRS
@@ -62,17 +64,17 @@
 	
 
 ### Polocy, Command, Actor 부착하여 읽기 좋게
-![image](https://user-images.githubusercontent.com/84724396/121798944-3c931480-cc64-11eb-9035-a6626ea7abd5.png)
+![image](https://user-images.githubusercontent.com/84724396/121799480-5f72f800-cc67-11eb-9832-045c9fc51997.png)
 
 
 ### Aggregate로 묶기
-![image](https://user-images.githubusercontent.com/84724396/121798966-5df40080-cc64-11eb-8e56-00d308da5223.png)
+![image](https://user-images.githubusercontent.com/84724396/121799488-79143f80-cc67-11eb-81f7-2a4a73f0fed3.png)
 
     - 대여, 책, 과금이력 Aggregate을 생성하고 그와 연결된 command 와 event, Polocy를 트랜잭션이 유지되어야 하는 단위로 묶어줌
 
-### 바운디드 컨텍스트로 묶기
 
-![image](https://user-images.githubusercontent.com/84724396/121799048-c5aa4b80-cc64-11eb-87da-1862eb8f13e6.png)
+### 바운디드 컨텍스트로 묶기
+![image](https://user-images.githubusercontent.com/84724396/121799515-934e1d80-cc67-11eb-94fd-7ba4b4dcde13.png)
 
     - 도메인 서열 분리 
         - Core Domain:  대여관리, 책관리 - 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기는 app 의 경우 1주일 1회 미만
@@ -80,60 +82,52 @@
 
 
 ### 폴리시의 이동
-![image](https://user-images.githubusercontent.com/84724396/121799165-744e8c00-cc65-11eb-8e8f-f63f4735262d.png)
+![image](https://user-images.githubusercontent.com/84724396/121799543-aeb92880-cc67-11eb-8ad2-83eaff90e58d.png)
 
 
 ### 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
-
-![image](https://user-images.githubusercontent.com/84724396/121799174-8d573d00-cc65-11eb-8ea0-d6d535290c33.png)
+![image](https://user-images.githubusercontent.com/84724396/121799550-bed10800-cc67-11eb-8630-fea901234efa.png)
 
 
 ### 완성된 모형
 
-![image](https://user-images.githubusercontent.com/73699193/97982584-60ad8e00-1e17-11eb-8fb6-af87b7c6ff91.png)
 
 
 
 ### 기능적 요구사항 검증
 
-![image](https://user-images.githubusercontent.com/73699193/97982759-96527700-1e17-11eb-9144-f95de1e0d01e.png)
 
-   	- 고객이 APP에서 폰을 주문한다. (ok)
-   	- 고객이 결제한다. (ok)
-	- 결제가 되면 주문 내역이 대리점에 전달된다. (ok)
-	- 대리점에 주문 정보가 도착하면 배송한다. (ok)
-	- 배송이 되면 APP에서 배송상태를 조회할 수 있다. (ok)
 
-![image](https://user-images.githubusercontent.com/73699193/97982841-b2eeaf00-1e17-11eb-9f09-9b74f85a96ca.png)
-
-	- 고객이 주문을 취소할 수 있다. (ok)
-	- 주문이 취소되면 결제가 취소된다. (ok)
-	- 고객이 결제상태를 APP에서  조회 할 수 있다. (ok)
-
-![image](https://user-images.githubusercontent.com/73699193/97982928-d3b70480-1e17-11eb-957e-6a9093d2a0d7.png)
-  
-	- 고객이 모든 진행내역을 볼 수 있어야 한다. (ok)
+1. 책 대여
+   1) 사용자가 책 대여를 신청한다. (OK)
+   2) 책 재고를 체크하고 재고를 1개 감소한다. (OK)
+   3) 청구서가 등록된다. (OK)
+2. 책 반납
+   1) 사용자가 책을 반납한다. (OK)
+   2) 책 재고가 1개 증가한다. (OK)
+   3) 결재가 완료된다. (OK)
+3. 사용자는 책 대여와 과금 이력을 조회한다. (OK)
 
 
 ### 비기능 요구사항 검증
 
-![image](https://user-images.githubusercontent.com/73699193/97983019-f6e1b400-1e17-11eb-86ef-d43873ccbb7d.png)
 
-    - 1) 결제가 되지 않은 주문건은 아예 거래가 성립되지 않아야 한다. (Req/Res)
-    - 2) 대리점관리 기능이 수행되지 않더라도 주문은 365일 24시간 받을 수 있어야 한다. (Pub/sub)
-    - 3) 결제시스템이 과중되면 사용자를 잠시동안 받지 않고 결제를 잠시후에 하도록 유도한다. (Circuit breaker)
-    - 4) 주문이 취소되면 결제가 취소되고 주문정보에 업데이트가 되어야 한다.  (SAGA, 보상트렌젝션)
-    - 5) 고객이 모든 진행내역을 조회 할 수 있도록 성능을 고려하여 별도의 view로 구성한다. (CQRS, DML/SELECT 분리)
+
+    - 1)책 재고가 1개 이상일때만 대여할 수 있어야 한다. -> Req/Res
+    - 2)책이 대여되면 재고가 1개 감소하고 반납되면 재고가 1개 증가한다. -> SAGA, 보상 트랜젝션
+    - 3)과금 관리 서비스가 수행되지 않더라도 365일 24시간 책을 대여할 수 있어야 한다. -> Pub/sub
+    - 4)과금 관리 서비스가 수행되지 않더라도 365일 24시간 책을 반납할 수 있어야 한다. -> Pub/sub
+    - 5)책 관리 시스템이 과중되면 대여를 잠시 동안 받지 않고 대여를 잠시 후에 하도록 유도한다. -> Circuit breaker
+    - 6)사용자가 대여와 청구 이력을 조회 할 수 있도록 성능을 고려하여 별도의 view로 구성한다.> CQRS
 
 
 ## 헥사고날 아키텍처 다이어그램 도출 (Polyglot)
-
-![image](https://user-images.githubusercontent.com/73699193/98181638-162b2f00-1f47-11eb-81af-0b71ff811e1c.png)
+![image](https://user-images.githubusercontent.com/84724396/121799592-fb046880-cc67-11eb-9314-08926db80466.png)
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
     - 호출관계에서 PubSub 과 Req/Resp 를 구분함
-    - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
-    - 대리점의 경우 Polyglot 검증을 위해 Hsql로 셜계
+    - 서브 도메인과 바운디드 컨텍스트의 분리
+    - rent의 경우 Polyglot 검증을 위해 Hsql로 셜계
 
 
 # 구현:

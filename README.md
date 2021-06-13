@@ -81,7 +81,7 @@
        - Supporting Domain : 과금관리, MyPage(view) - 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
 
 
-### 7. 폴리시의 이동
+### 7. 폴리시의 이동 (Choreography)
 ![image](https://user-images.githubusercontent.com/84724396/121803098-d4036200-cc7a-11eb-9d94-17e03a772c9a.png)
 
 

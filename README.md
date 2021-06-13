@@ -46,67 +46,53 @@
 
 # 분석/설계
 
-
-## AS-IS 조직 (Horizontally-Aligned)
-  ![image](https://user-images.githubusercontent.com/487999/79684144-2a893200-826a-11ea-9a01-79927d3a0107.png)
-
-## TO-BE 조직 (Vertically-Aligned)
-  ![image](https://user-images.githubusercontent.com/487999/79684159-3543c700-826a-11ea-8d5f-a3fc0c4cad87.png)
-
-
 ## Event Storming 결과
 * MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/G4Le38IyNmPdGV7UTxmqbVhBw8z1/share/fef3e793823083653eb1b4ef257a6bb3/-MLAUDjJIxzggM4AGxrE
 
 
 ### 이벤트 도출
-![image](https://user-images.githubusercontent.com/70673885/97949704-dc87e600-1dd7-11eb-9525-544b2411cc51.png)
+![image](https://user-images.githubusercontent.com/84724396/121798830-90e9c480-cc63-11eb-8cf6-f365ac151763.png)
+
 
 ### 부적격 이벤트 탈락
-![image](https://user-images.githubusercontent.com/70673885/97949767-0a6d2a80-1dd8-11eb-8c2f-fa445fa61418.png)
+![image](https://user-images.githubusercontent.com/84724396/121798856-a4952b00-cc63-11eb-9f26-a1c626d7c8b2.png)
 
     - 과정중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함
-	- 폰종류가선택됨, 결제버튼클릭됨, 배송수량선택됨, 배송일자선택됨  :  UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외
-	- 배송취소됨, 메시지발송됨  :  계획된 사업 범위 및 프로젝트에서 벗어서난다고 판단하여 제외
-	- 주문정보전달됨  :  주문됨을 선택하여 제외
+        - 책 선택됨, 대여 버튼 클릭됨, 결제 버튼 클릭됨 :  UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외
 	
 
-### 액터, 커맨드 부착하여 읽기 좋게
-![image](https://user-images.githubusercontent.com/73699193/97982030-82f2dc00-1e16-11eb-821d-27351387f8ad.png)
+### Polocy, Command, Actor 부착하여 읽기 좋게
+![image](https://user-images.githubusercontent.com/84724396/121798944-3c931480-cc64-11eb-9035-a6626ea7abd5.png)
 
-### 어그리게잇으로 묶기
-![image](https://user-images.githubusercontent.com/73699193/97982108-a158d780-1e16-11eb-9270-6e9646268fd1.png)
 
-    - 주문, 대리점관리, 결제 어그리게잇을 생성하고 그와 연결된 command 와 event 들에 의하여 트랜잭션이 유지되어야 하는 단위로 그들 끼리 묶어줌
+### Aggregate로 묶기
+![image](https://user-images.githubusercontent.com/84724396/121798966-5df40080-cc64-11eb-8e56-00d308da5223.png)
+
+    - 대여, 책, 과금이력 Aggregate을 생성하고 그와 연결된 command 와 event, Polocy를 트랜잭션이 유지되어야 하는 단위로 묶어줌
 
 ### 바운디드 컨텍스트로 묶기
 
-![image](https://user-images.githubusercontent.com/73699193/97982213-c77e7780-1e16-11eb-87ef-03dbe66a6cf2.png)
+![image](https://user-images.githubusercontent.com/84724396/121799048-c5aa4b80-cc64-11eb-87da-1862eb8f13e6.png)
 
     - 도메인 서열 분리 
-        - Core Domain:  app(front), store : 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기는 app 의 경우 1주일 1회 미만, store 의 경우 1개월 1회 미만
-        - Supporting Domain:  customer(view) : 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
-        - General Domain:  pay : 결제서비스로 3rd Party 외부 서비스를 사용하는 것이 경쟁력이 높음 
+        - Core Domain:  대여관리, 책관리 - 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기는 app 의 경우 1주일 1회 미만
+        - Supporting Domain:  과금관리, customer(view) : 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
 
-### 폴리시 부착 (괄호는 수행주체, 폴리시 부착을 둘째단계에서 해놔도 상관 없음. 전체 연계가 초기에 드러남)
-
-![image](https://user-images.githubusercontent.com/73699193/97982278-e3821900-1e16-11eb-97f4-fa2f59fc7ae0.png)
 
 ### 폴리시의 이동
+![image](https://user-images.githubusercontent.com/84724396/121799165-744e8c00-cc65-11eb-8e8f-f63f4735262d.png)
 
-![image](https://user-images.githubusercontent.com/73699193/97982413-19bf9880-1e17-11eb-9720-cd82cf1060ff.png)
 
 ### 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
 
-![image](https://user-images.githubusercontent.com/73699193/97982527-45428300-1e17-11eb-8641-b658bab34fc6.png)
+![image](https://user-images.githubusercontent.com/84724396/121799174-8d573d00-cc65-11eb-8ea0-d6d535290c33.png)
 
-    - 컨텍스트 매핑하여 묶어줌.
-    - 팀원 중 외국인이 투입되어 유비쿼터스 랭귀지인 영어로 변경	
 
 ### 완성된 모형
 
 ![image](https://user-images.githubusercontent.com/73699193/97982584-60ad8e00-1e17-11eb-8fb6-af87b7c6ff91.png)
 
-    - View Model 추가
+
 
 ### 기능적 요구사항 검증
 

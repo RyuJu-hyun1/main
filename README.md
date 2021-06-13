@@ -3,7 +3,7 @@
 
 # 서비스 시나리오
 
-기능적 요구사항
+### 기능적 요구사항
 
 1. 책 대여
    1) 사용자가 책 대여를 신청한다.
@@ -15,86 +15,85 @@
    3) 결재가 완료된다.
 3. 사용자는 책 대여와 과금 이력을 조회한다.
 
-비기능적 요구사항
+### 비기능적 요구사항
 
 1. 트랜잭션
-   1)책 재고가 1개 이상일때만 대여할 수 있어야 한다. -> Sync 호출
-   2)책이 대여되면 재고가 1개 감소하고 반납되면 재고가 1개 증가한다. -> SAGA, 보상 트랜젝션
+   1) 책 재고가 1개 이상일때만 대여할 수 있어야 한다. -> Sync 호출
+   2) 책이 대여되면 재고가 1개 감소하고 반납되면 재고가 1개 증가한다. -> SAGA, 보상 트랜젝션
 
 2. 장애격리
-   1)과금 관리 서비스가 수행되지 않더라도 365일 24시간 책을 대여할 수 있어야 한다. -> Async(event-driven) , Eventual consistency
-   2)과금 관리 서비스가 수행되지 않더라도 365일 24시간 책을 반납할 수 있어야 한다. -> Async(event-driven) , Eventual consistency
-   3)책 관리 시스템이 과중되면 대여를 잠시 동안 받지 않고 대여를 잠시 후에 하도록 유도한다. -> Circuit breaker
+   1) 과금 관리 서비스가 수행되지 않더라도 365일 24시간 책을 대여할 수 있어야 한다. -> Async(event-driven) , Eventual consistency
+   2) 과금 관리 서비스가 수행되지 않더라도 365일 24시간 책을 반납할 수 있어야 한다. -> Async(event-driven) , Eventual consistency
+   3) 책 관리 시스템이 과중되면 대여를 잠시 동안 받지 않고 대여를 잠시 후에 하도록 유도한다. -> Circuit breaker
 
 3. 성능
-   사용자가 대여와 청구 이력을 조회 할 수 있도록 성능을 고려하여 별도의 view로 구성한다.> CQRS
+   1) 사용자가 대여와 청구 이력을 조회 할 수 있도록 성능을 고려하여 별도의 view로 구성한다.> CQRS
 
 
 # 체크포인트
 
 1. Saga
-1. CQRS
-1. Correlation
-1. Req/Resp
-1. Gateway
-1. Deploy/ Pipeline
-1. Circuit Breaker
-1. Autoscale (HPA)
-1. Zero-downtime deploy (Readiness Probe)
-1. Config Map/ Persistence Volume
-1. Polyglot
-1. Self-healing (Liveness Probe)
+2. CQRS
+3. Correlation
+4. Req/Resp
+5. Gateway
+6. Deploy/ Pipeline
+7. Circuit Breaker
+8. Autoscale (HPA)
+9. Zero-downtime deploy (Readiness Probe)
+10. Config Map/ Persistence Volume
+11. Polyglot
+12. Self-healing (Liveness Probe)
 
 
 # 분석/설계
 
-## Event Storming 결과
+### 1. Event Storming 결과
 * MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/G4Le38IyNmPdGV7UTxmqbVhBw8z1/share/fef3e793823083653eb1b4ef257a6bb3/-MLAUDjJIxzggM4AGxrE
 
 
-### 이벤트 도출
+### 2. 이벤트 도출
 ![image](https://user-images.githubusercontent.com/84724396/121798830-90e9c480-cc63-11eb-8cf6-f365ac151763.png)
 
 
-### 부적격 이벤트 탈락
+### 3. 부적격 이벤트 탈락
 ![image](https://user-images.githubusercontent.com/84724396/121798856-a4952b00-cc63-11eb-9f26-a1c626d7c8b2.png)
 
-    - 과정중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함
-        - 책 선택됨, 대여 버튼 클릭됨, 결제 버튼 클릭됨 :  UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외
+    과정중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함
+       - 책 선택됨, 대여 버튼 클릭됨, 결제 버튼 클릭됨 :  UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외
 	
 
-### Polocy, Command, Actor 부착하여 읽기 좋게
+### 4. Polocy, Command, Actor 부착하여 읽기 좋게
 ![image](https://user-images.githubusercontent.com/84724396/121799480-5f72f800-cc67-11eb-9832-045c9fc51997.png)
 
 
-### Aggregate로 묶기
+### 5. Aggregate로 묶기
 ![image](https://user-images.githubusercontent.com/84724396/121799488-79143f80-cc67-11eb-81f7-2a4a73f0fed3.png)
 
     - 대여, 책, 과금이력 Aggregate을 생성하고 그와 연결된 command 와 event, Polocy를 트랜잭션이 유지되어야 하는 단위로 묶어줌
 
 
-### 바운디드 컨텍스트로 묶기
+### 6. 바운디드 컨텍스트로 묶기
 ![image](https://user-images.githubusercontent.com/84724396/121799515-934e1d80-cc67-11eb-94fd-7ba4b4dcde13.png)
 
-    - 도메인 서열 분리 
-        - Core Domain:  대여관리, 책관리 - 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기는 app 의 경우 1주일 1회 미만
-        - Supporting Domain:  과금관리, customer(view) : 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
+    도메인 서열 분리 
+       - Core Domain : 대여관리, 책관리 - 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기는 app 의 경우 1주일 1회 미만
+       - Supporting Domain : 과금관리, mypage(view) - 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
 
 
-### 폴리시의 이동
+### 7. 폴리시의 이동
 ![image](https://user-images.githubusercontent.com/84724396/121799543-aeb92880-cc67-11eb-8ad2-83eaff90e58d.png)
 
 
-### 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
+### 8. 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
 ![image](https://user-images.githubusercontent.com/84724396/121799550-bed10800-cc67-11eb-8630-fea901234efa.png)
 
 
-### 완성된 모형
+### 9. 완성된 모형
 
 
 
-
-### 기능적 요구사항 검증
+### 10. 기능적 요구사항 검증
 
 
 
@@ -109,7 +108,7 @@
 3. 사용자는 책 대여와 과금 이력을 조회한다. (OK)
 
 
-### 비기능 요구사항 검증
+### 11. 비기능 요구사항 검증
 
 
 
@@ -121,7 +120,7 @@
     - 6)사용자가 대여와 청구 이력을 조회 할 수 있도록 성능을 고려하여 별도의 view로 구성한다.> CQRS
 
 
-## 헥사고날 아키텍처 다이어그램 도출 (Polyglot)
+### 12. 헥사고날 아키텍처 다이어그램 도출 (Polyglot)
 ![image](https://user-images.githubusercontent.com/84724396/121799592-fb046880-cc67-11eb-9314-08926db80466.png)
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함

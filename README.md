@@ -63,18 +63,18 @@
        - 책 선택됨, 대여 버튼 클릭됨, 결제 버튼 클릭됨 :  UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외
 	
 
-### 4. Polocy, Command, Actor 부착하여 읽기 좋게
+### 4. Polocy, Command, Actor 부착
 ![image](https://user-images.githubusercontent.com/84724396/121799480-5f72f800-cc67-11eb-9832-045c9fc51997.png)
 
 
 ### 5. Aggregate로 묶기
-![image](https://user-images.githubusercontent.com/84724396/121799488-79143f80-cc67-11eb-81f7-2a4a73f0fed3.png)
+![image](https://user-images.githubusercontent.com/84724396/121803071-b46c3980-cc7a-11eb-9739-894a3fc8500a.png)
 
     - 대여, 책, 과금이력 Aggregate을 생성하고 그와 연결된 command 와 event, Polocy를 트랜잭션이 유지되어야 하는 단위로 묶어줌
 
 
 ### 6. 바운디드 컨텍스트로 묶기
-![image](https://user-images.githubusercontent.com/84724396/121799515-934e1d80-cc67-11eb-94fd-7ba4b4dcde13.png)
+![image](https://user-images.githubusercontent.com/84724396/121803081-c352ec00-cc7a-11eb-8ff0-39bf2989d00f.png)
 
     도메인 서열 분리 
        - Core Domain : 대여관리, 책관리 - 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기는 app 의 경우 1주일 1회 미만
@@ -82,11 +82,11 @@
 
 
 ### 7. 폴리시의 이동
-![image](https://user-images.githubusercontent.com/84724396/121799543-aeb92880-cc67-11eb-8ad2-83eaff90e58d.png)
+![image](https://user-images.githubusercontent.com/84724396/121803098-d4036200-cc7a-11eb-9d94-17e03a772c9a.png)
 
 
 ### 8. 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
-![image](https://user-images.githubusercontent.com/84724396/121799550-bed10800-cc67-11eb-8630-fea901234efa.png)
+![image](https://user-images.githubusercontent.com/84724396/121803111-e41b4180-cc7a-11eb-8d27-40b449011de6.png)
 
 
 ### 9. 완성된 모형
@@ -94,7 +94,7 @@
 
 
 ### 10. 기능적 요구사항 검증
-![image](https://user-images.githubusercontent.com/84724396/121802543-d7e1b500-cc77-11eb-9b3c-be50333d2181.png)
+![image](https://user-images.githubusercontent.com/84724396/121803130-02813d00-cc7b-11eb-9250-b5f122130faf.png)
 
 
 1. 책 대여

@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/84724396/121802695-9c93b600-cc78-11eb-8e51-2f215193e782.png)
+![image](https://user-images.githubusercontent.com/84724396/121802716-cb119100-cc78-11eb-8d9d-5cd9ed9102bf.png)
 
 
 # 서비스 시나리오

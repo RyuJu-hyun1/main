@@ -131,7 +131,7 @@
 
 # 구현:
 
-서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 8084 이다)
+서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 8084, 8088 이다)
 
 ```
 cd rent
@@ -145,6 +145,9 @@ mvn spring-boot:run
 
 cd mypage
 mvn spring-boot:run  
+
+cd gateway
+mvn spring-boot:run 
 ```
 
 ## DDD 의 적용

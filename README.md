@@ -49,7 +49,7 @@
 # 분석/설계
 
 ### 1. Event Storming 결과
-* MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/G4Le38IyNmPdGV7UTxmqbVhBw8z1/share/fef3e793823083653eb1b4ef257a6bb3/-MLAUDjJIxzggM4AGxrE
+* MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/Yb3C3fFMlXWxp7KbYaVj0AG6Wd23/mine/fab3139d46ea13e0ed0108eb96c3f63c
 
 
 ### 2. 이벤트 도출
@@ -90,11 +90,11 @@
 
 
 ### 9. 완성된 모형
-
+![image](https://user-images.githubusercontent.com/84724396/121802510-a36df900-cc77-11eb-9546-089f03e26f10.png)
 
 
 ### 10. 기능적 요구사항 검증
-
+![image](https://user-images.githubusercontent.com/84724396/121802543-d7e1b500-cc77-11eb-9b3c-be50333d2181.png)
 
 
 1. 책 대여
@@ -109,7 +109,7 @@
 
 
 ### 11. 비기능 요구사항 검증
-
+![image](https://user-images.githubusercontent.com/84724396/121802590-1aa38d00-cc78-11eb-801c-de8aef7ab8d2.png)
 
 
     - 1)책 재고가 1개 이상일때만 대여할 수 있어야 한다. -> Req/Res

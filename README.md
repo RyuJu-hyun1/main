@@ -120,7 +120,7 @@
     - 6)사용자가 대여와 청구 이력을 조회 할 수 있도록 성능을 고려하여 별도의 view로 구성한다.> CQRS
 
 
-### 12. Applying Hexagonal Architecture 다이어그램 도출 (Polyglot)
+### 12. Hexagonal Architecture Diagram 도출 (Polyglot)
 ![image](https://user-images.githubusercontent.com/84724396/121799592-fb046880-cc67-11eb-9314-08926db80466.png)
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함

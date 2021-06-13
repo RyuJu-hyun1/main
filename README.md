@@ -77,8 +77,8 @@
 ![image](https://user-images.githubusercontent.com/84724396/121803081-c352ec00-cc7a-11eb-8ff0-39bf2989d00f.png)
 
     도메인 서열 분리 
-       - Core Domain : 대여관리, 책관리 - 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기는 app 의 경우 1주일 1회 미만
-       - Supporting Domain : 과금관리, mypage(view) - 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
+       - Core Domain : 대여관리, 책관리 - 없어서는 안될 핵심 서비스이며, 연간 Up-time SLA 수준을 99.999% 목표, 배포주기는 app 의 경우 1주일 1회 미만
+       - Supporting Domain : 과금관리, MyPage(view) - 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
 
 
 ### 7. 폴리시의 이동

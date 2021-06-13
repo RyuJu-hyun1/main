@@ -59,11 +59,11 @@
 ### 3. 부적격 이벤트 탈락
 ![image](https://user-images.githubusercontent.com/84724396/121798856-a4952b00-cc63-11eb-9f26-a1c626d7c8b2.png)
 
-    과정중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함
+    잘못된 도메인 이벤트들을 걸러내는 작업을 수행함
        - 책 선택됨, 대여 버튼 클릭됨, 결제 버튼 클릭됨 :  UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외
 	
 
-### 4. Polocy, Command, Actor 부착
+### 4. Policy, Command, Actor 부착
 ![image](https://user-images.githubusercontent.com/84724396/121799480-5f72f800-cc67-11eb-9832-045c9fc51997.png)
 
 
@@ -73,7 +73,7 @@
     - 대여, 책, 과금이력 Aggregate을 생성하고 그와 연결된 command 와 event, Polocy를 트랜잭션이 유지되어야 하는 단위로 묶어줌
 
 
-### 6. 바운디드 컨텍스트로 묶기
+### 6. Bounded Context로 묶기
 ![image](https://user-images.githubusercontent.com/84724396/121803081-c352ec00-cc7a-11eb-8ff0-39bf2989d00f.png)
 
     도메인 서열 분리 
@@ -81,11 +81,11 @@
        - Supporting Domain : 과금관리, MyPage(view) - 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
 
 
-### 7. 폴리시의 이동 (Choreography)
+### 7. Policy의 이동 (Choreography)
 ![image](https://user-images.githubusercontent.com/84724396/121803098-d4036200-cc7a-11eb-9d94-17e03a772c9a.png)
 
 
-### 8. 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
+### 8. Context Mapping (점선은 Pub/Sub, 실선은 Req/Resp)
 ![image](https://user-images.githubusercontent.com/84724396/121803111-e41b4180-cc7a-11eb-8d27-40b449011de6.png)
 
 
@@ -120,7 +120,7 @@
     - 6)사용자가 대여와 청구 이력을 조회 할 수 있도록 성능을 고려하여 별도의 view로 구성한다.> CQRS
 
 
-### 12. 헥사고날 아키텍처 다이어그램 도출 (Polyglot)
+### 12. Applying Hexagonal Architecture 다이어그램 도출 (Polyglot)
 ![image](https://user-images.githubusercontent.com/84724396/121799592-fb046880-cc67-11eb-9314-08926db80466.png)
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함

@@ -164,13 +164,15 @@ Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양�
 ![image](https://user-images.githubusercontent.com/73699193/98182486-378d1a80-1f49-11eb-8e14-0de7296978b5.png)
 
 
-## Polyglot 프로그래밍 적용
+## 폴리글랏 퍼시스턴스
 H2 DB인 book, billing과 달리 rent는 Hsql으로 구현하여 MSA간 서로 다른 종류의 DB간에도 문제 없이 동작하여 다형성을 만족하는지 확인하였다. 
 
 rent의 pom.xml 설정
+
 ![image](https://user-images.githubusercontent.com/84724396/122640079-63f05280-d138-11eb-8f9f-447729df12c5.png)
 
 book, billing의 pom.xml 설정
+
 ![image](https://user-images.githubusercontent.com/84724396/122640113-9bf79580-d138-11eb-952c-b7bd8207f966.png)
 
 

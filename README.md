@@ -252,9 +252,8 @@ http POST localhost:8081/rents userid=200 bookid=2   #Fail
 
 - 청구(billing)에서는 대여 완료(rented) 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다.
 - 대여 완료된 (rented) 정보를 billing의 Repository에 저장한다.
- 
-![image](https://user-images.githubusercontent.com/73699193/98076059-e0d40200-1eb0-11eb-94ad-c4ea114cb3aa.png)
 
+![image](https://user-images.githubusercontent.com/84724396/122673339-e5181a00-d20a-11eb-9123-4f2dc14727d8.png)
 
 청구(billing)시스템은 대여(rent)/책(book)와 완전히 분리되어있으며(sync transaction 없음), 이벤트 수신에 따라 처리되기 때문에, 청구(billing)이 유지보수로 인해 잠시 내려간 상태라도 대여를 하는데 문제가 없다.(시간적 디커플링)
 
@@ -264,18 +263,23 @@ http POST localhost:8081/rents userid=200 bookid=2   #Fail
 #대여(rent)
 http POST localhost:8081/rents userid=300 bookid=1
 
-#대여 상태 확인
-http GET localhost:8084/myPages    # 상태값이 'Shipped'이 아닌 'Payed'에서 멈춤을 확인
+#대여 상태 확인 (myPage)
+http GET localhost:8084/myPages    # billid, fee, billstatus 값이 없음
 ```
+-------- 이미지 교체
+
 ![image](https://user-images.githubusercontent.com/73699193/98078301-2b577d80-1eb5-11eb-9d89-7c03a3fa27dd.png)
 ```
-#대리점(store) 서비스 기동
-cd store
+#청구(billing) 서비스 기동
+cd billing
 mvn spring-boot:run
 
-#주문상태 확인
-http get http://localhost:8081/orders     # 'Payed' 였던 상태값이 'Shipped'로 변경된 것을 확인
+#대여 상태 확인 (myPage)
+http GET localhost:8084/myPages    # billid, fee, billstatus 값이 update 됨
 ```
+
+-------- 이미지 교체
+
 ![image](https://user-images.githubusercontent.com/73699193/98078837-2cd57580-1eb6-11eb-8850-a8c621410d61.png)
 
 # 운영
@@ -284,35 +288,50 @@ http get http://localhost:8081/orders     # 'Payed' 였던 상태값이 'Shipped
 
 - 네임스페이스 만들기
 ```
-kubectl create ns phone82
+kubectl create ns rbook
 kubectl get ns
 ```
+--------이미지 교체
+
 ![image](https://user-images.githubusercontent.com/73699193/97960790-6d20ef00-1df5-11eb-998d-d5591975b5d4.png)
 
 - 폴더 만들기, 해당폴더로 이동
 ```
-mkdir phone82
-cd phone 82
+mkdir rbook
+cd rbook
 ```
+--------이미지 교체
+
 ![image](https://user-images.githubusercontent.com/73699193/97961127-0ea84080-1df6-11eb-81b3-1d5e460d4c0f.png)
 
 - 소스 가져오기
 ```
-git clone https://github.com/phone82/app.git
+git clone https://github.com/rbook/app.git
 ```
+
+--------이미지 교체
+
 ![image](https://user-images.githubusercontent.com/73699193/98089346-eb4cc680-1ec5-11eb-9c23-f6987dee9308.png)
+
 
 - 빌드하기
 ```
 cd app
 mvn package -Dmaven.test.skip=true
 ```
+
+--------이미지 교체
+
 ![image](https://user-images.githubusercontent.com/73699193/98089442-19320b00-1ec6-11eb-88b5-544cd123d62a.png)
+
 
 - 도커라이징: Azure 레지스트리에 도커 이미지 푸시하기
 ```
 az acr build --registry admin02 --image admin02.azurecr.io/app:latest .
 ```
+
+--------이미지 교체
+
 ![image](https://user-images.githubusercontent.com/73699193/98089685-6dd58600-1ec6-11eb-8fb9-80705c854c7b.png)
 
 - 컨테이너라이징: 디플로이 생성 확인
@@ -320,6 +339,9 @@ az acr build --registry admin02 --image admin02.azurecr.io/app:latest .
 kubectl create deploy app --image=admin02.azurecr.io/app:latest -n phone82
 kubectl get all -n phone82
 ```
+
+--------이미지 교체
+
 ![image](https://user-images.githubusercontent.com/73699193/98090560-83977b00-1ec7-11eb-9770-9cfe1021f0b4.png)
 
 - 컨테이너라이징: 서비스 생성 확인

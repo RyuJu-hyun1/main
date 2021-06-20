@@ -176,9 +176,10 @@ book, billing의 pom.xml 설정
 
 ### 3. Gateway 적용
 
+API GateWay를 통하여 마이크로 서비스들의 집입점을 통일할 수 있다. 다음과 같이 Gateay를 적용하였다.
 gateway > applitcation.yml 설정
 
-![image](https://user-images.githubusercontent.com/73699193/98060621-5d54e980-1e8d-11eb-943c-692c5953c6a1.png)
+![image](https://user-images.githubusercontent.com/84724396/122665922-36151780-d1e5-11eb-9779-e9d0870a6f95.png)
 
 gateway 테스트
 
@@ -186,10 +187,9 @@ gateway 테스트
 http POST http://gateway:8080/orders item=test qty=1
 ```
 ![image](https://user-images.githubusercontent.com/73699193/98183284-2d6c1b80-1f4b-11eb-90ad-c95c4df1f36a.png)
+![image](https://user-images.githubusercontent.com/84724396/122665929-40cfac80-d1e5-11eb-83d9-bbe402f73f57.png)
 
-
-
-## 동기식 호출 과 Fallback 처리
+### 동기식 호출 과 Fallback 처리
 
 분석단계에서의 조건 중 하나로 주문(app)->결제(pay) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 
 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 

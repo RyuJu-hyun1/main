@@ -241,8 +241,7 @@ http POST localhost:8081/rents userid=200 bookid=2   #Fail
 ```
 -------이미지 
 
-## 비동기식 호출 / 시간적 디커플링 / 장애격리 
-
+### 5. 비동기식 호출 / 시간적 디커플링 / 장애격리 
 
 대여(rent)가 완료된 후에 청구(billing)으로 이를 알려주는 행위와 반납(return)이 완료된 후에 청구(billing)으로 이를 알려주는 행위는 비 동기식으로 처리해서 대여와 반납이 블로킹 되지 않아도 처리 한다.
  
@@ -282,29 +281,26 @@ http GET localhost:8084/myPages    # billid, fee, billstatus 값이 update 됨
 
 ![image](https://user-images.githubusercontent.com/73699193/98078837-2cd57580-1eb6-11eb-8850-a8c621410d61.png)
 
+### 6. CQRS 
+
+mypage에서 rent와 billing 정보를 조회한다.
+Correlation을 key를 활용하여 userid, rentid, bookid, billid 등 원하는 값을 서비스간의 I/F를 통하여 서비스 간에 트랜잭션이 묶여 있음을 알 수 있다.
+
+-------- 이미지 추가
+
 # 운영
 
-## Deploy / Pipeline
+## 1. Deploy / Pipeline
 
-- 네임스페이스 만들기
+### 1.1 namespace 생성
 ```
 kubectl create ns rbook
-kubectl get ns
 ```
 --------이미지 교체
 
 ![image](https://user-images.githubusercontent.com/73699193/97960790-6d20ef00-1df5-11eb-998d-d5591975b5d4.png)
 
-- 폴더 만들기, 해당폴더로 이동
-```
-mkdir rbook
-cd rbook
-```
---------이미지 교체
-
-![image](https://user-images.githubusercontent.com/73699193/97961127-0ea84080-1df6-11eb-81b3-1d5e460d4c0f.png)
-
-- 소스 가져오기
+### 1.2 git에서 소스 가져오기
 ```
 git clone https://github.com/rbook/app.git
 ```
@@ -314,10 +310,12 @@ git clone https://github.com/rbook/app.git
 ![image](https://user-images.githubusercontent.com/73699193/98089346-eb4cc680-1ec5-11eb-9c23-f6987dee9308.png)
 
 
-- 빌드하기
+### 1.3 Build 하기 (예: rent)
 ```
-cd app
-mvn package -Dmaven.test.skip=true
+cd /home/project/rbook/rent
+mvn clean
+mvn compile
+mvn package
 ```
 
 --------이미지 교체
@@ -325,40 +323,25 @@ mvn package -Dmaven.test.skip=true
 ![image](https://user-images.githubusercontent.com/73699193/98089442-19320b00-1ec6-11eb-88b5-544cd123d62a.png)
 
 
-- 도커라이징: Azure 레지스트리에 도커 이미지 푸시하기
+### 1.4 Docker Image Push/deploy/서비스 생성 (예: rent)-- 명령어 수정
 ```
-az acr build --registry admin02 --image admin02.azurecr.io/app:latest .
+cd /home/project/rbook/rent
+az acr build --registry skcc1team --image skcc1team.azurecr.io/bike:latest . 
+kubectl create deploy rent --image=skcc1team.azurecr.io/bike:latest -n rbook  
+kubectl expose deploy rent --type=ClusterIP --port=8080 -n rbook
 ```
 
 --------이미지 교체
 
 ![image](https://user-images.githubusercontent.com/73699193/98089685-6dd58600-1ec6-11eb-8fb9-80705c854c7b.png)
 
-- 컨테이너라이징: 디플로이 생성 확인
+### 1.5 yml파일 이용한 deploy
 ```
-kubectl create deploy app --image=admin02.azurecr.io/app:latest -n phone82
-kubectl get all -n phone82
+cd /home/project/rbook/rent
+kubectl apply -f ./kubernetes/deployment.yml -n rbook
 ```
 
---------이미지 교체
-
-![image](https://user-images.githubusercontent.com/73699193/98090560-83977b00-1ec7-11eb-9770-9cfe1021f0b4.png)
-
-- 컨테이너라이징: 서비스 생성 확인
-```
-kubectl expose deploy app --type="ClusterIP" --port=8080 -n phone82
-kubectl get all -n phone82
-```
-![image](https://user-images.githubusercontent.com/73699193/98090693-b80b3700-1ec7-11eb-959e-fc0ce94663aa.png)
-
-- pay, store, customer, gateway에도 동일한 작업 반복
-
-
-
-
--(별첨)deployment.yml을 사용하여 배포 
-
-- deployment.yml 편집
+- deployment.yml 파일
 ```
 namespace, image 설정
 env 설정 (config Map) 
@@ -366,15 +349,24 @@ readiness 설정 (무정지 배포)
 liveness 설정 (self-healing)
 resource 설정 (autoscaling)
 ```
-![image](https://user-images.githubusercontent.com/73699193/98092861-8182eb80-1eca-11eb-87c5-afa22140ebad.png)
 
-- deployment.yml로 서비스 배포
+--------이미지 추가 (deployment.yml)
+
+### 1.6 컨테이너라이징: Deploy 생성, 서비스 생성 확인
+
 ```
-cd app
-kubectl apply -f kubernetes/deployment.yml
+kubectl get all -n rbook
 ```
 
-## 동기식 호출 / 서킷 브레이킹 / 장애격리
+--------이미지 교체
+
+![image](https://user-images.githubusercontent.com/73699193/98090560-83977b00-1ec7-11eb-9770-9cfe1021f0b4.png)
+
+
+- book, billing, mypage, gateway에도 동일한 작업 반복
+
+
+### 2. 동기식 호출 / 서킷 브레이킹 / 장애격리
 
 * 서킷 브레이킹 프레임워크의 선택: Spring FeignClient + Hystrix 옵션을 사용하여 구현함
 

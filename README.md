@@ -180,6 +180,8 @@ API GateWay를 통하여 마이크로 서비스들의 집입점을 통일할 수
 gateway > applitcation.yml 설정
 
 ![image](https://user-images.githubusercontent.com/84724396/122665922-36151780-d1e5-11eb-9779-e9d0870a6f95.png)
+![image](https://user-images.githubusercontent.com/84724396/122665929-40cfac80-d1e5-11eb-83d9-bbe402f73f57.png)
+
 
 gateway 테스트
 
@@ -187,7 +189,7 @@ gateway 테스트
 http POST http://gateway:8080/orders item=test qty=1
 ```
 ![image](https://user-images.githubusercontent.com/73699193/98183284-2d6c1b80-1f4b-11eb-90ad-c95c4df1f36a.png)
-![image](https://user-images.githubusercontent.com/84724396/122665929-40cfac80-d1e5-11eb-83d9-bbe402f73f57.png)
+
 
 ### 동기식 호출 과 Fallback 처리
 

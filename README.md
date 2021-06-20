@@ -199,29 +199,19 @@ http POST http://gateway:8080/orders item=test qty=1
 
 - 결제서비스를 호출하기 위하여 FeignClient 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
 
-(rent) external > BookService.java
-
 ![image](https://user-images.githubusercontent.com/84724396/122668480-2dc3d900-d1f3-11eb-9f30-0b0dfaa44083.png)
 
+- 책 대여요청을 받은 직후 책 재고 확인을 요청하도록 처리
 
-- 주문을 받은 직후 결제를 요청하도록 처리
-```
-# (app) Order.java (Entity)
+# (rent) Rent.java (Entity)
 
-    @PostPersist
-    public void onPostPersist(){
+![image](https://user-images.githubusercontent.com/84724396/122668694-3ff24700-d1f4-11eb-9130-fad3cf066dc1.png)
 
-       phoneseller.external.Payment payment = new phoneseller.external.Payment();
-        payment.setOrderId(this.getId());
-        payment.setProcess("Ordered");
-        
-        AppApplication.applicationContext.getBean(phoneseller.external.PaymentService.class)
-            .pay(payment);
-    }
-```
-![image](https://user-images.githubusercontent.com/73699193/98066539-a6f80100-1e9a-11eb-8dd8-bf213d90e5fb.png)
+- [검증1] 책 재고가 0이면 '책은 재고가 없어 대여가 불가합니다.' 메세지를 보내고 대여가 안됨
 
-- 동기식 호출이 적용되서 결제 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
+----- 이미지
+
+- [검증2] 동기식 호출이 적용되서 Book 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
 
 ```
 #결제(pay) 서비스를 잠시 내려놓음 (ctrl+c)

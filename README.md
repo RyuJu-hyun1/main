@@ -255,7 +255,7 @@ http POST localhost:8081/rents userid=200 bookid=2   #Fail
 
 ![image](https://user-images.githubusercontent.com/84724396/122673339-e5181a00-d20a-11eb-9123-4f2dc14727d8.png)
 
-청구(billing)시스템은 대여(rent)/책(book)와 완전히 분리되어있으며(sync transaction 없음), 이벤트 수신에 따라 처리되기 때문에, 청구(billing)이 유지보수로 인해 잠시 내려간 상태라도 대여를 하는데 문제가 없다.(시간적 디커플링)
+청구(billing)시스템은 대여(rent)/책(book)와 완전히 분리되어있으며(sync transaction 없음), 이벤트 수신에 따라 처리되기 때문에, 청구(billing)이 유지보수로 인해 잠시 내려간 상태라도 대여를 하는데 문제가 없다.(시간적 디커플링, 장애 격리)
 
 ```
 #청구(billing) 서비스를 잠시 내려놓음 (ctrl+c)

@@ -183,7 +183,7 @@ gateway > applitcation.yml 설정
 ![image](https://user-images.githubusercontent.com/84724396/122665929-40cfac80-d1e5-11eb-83d9-bbe402f73f57.png)
 
 
-gateway 테스트
+------ gateway 테스트
 
 ```
 http POST http://gateway:8080/orders item=test qty=1
@@ -191,26 +191,17 @@ http POST http://gateway:8080/orders item=test qty=1
 ![image](https://user-images.githubusercontent.com/73699193/98183284-2d6c1b80-1f4b-11eb-90ad-c95c4df1f36a.png)
 
 
-### 동기식 호출 과 Fallback 처리
+### 4. 동기식 호출 과 Fallback 처리
 
-분석단계에서의 조건 중 하나로 주문(app)->결제(pay) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 
+비기능적 요구사항 중 하나인 '책 재고가 1개 이상일때만 대여할 수 있어야 한다.' 를 충족하기 위해
+대여(rent) -> 책(book) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 
 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 
 
 - 결제서비스를 호출하기 위하여 FeignClient 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
-```
-# (app) external > PaymentService.java
 
-package phoneseller.external;
+(rent) external > BookService.java
 
-@FeignClient(name="pay", url="${api.pay.url}")
-public interface PaymentService {
-
-    @RequestMapping(method= RequestMethod.POST, path="/payments")
-    public void pay(@RequestBody Payment payment);
-
-}
-```
-![image](https://user-images.githubusercontent.com/73699193/98065833-b1190000-1e98-11eb-9e44-84d4961011ed.png)
+![image](https://user-images.githubusercontent.com/84724396/122668480-2dc3d900-d1f3-11eb-9f30-0b0dfaa44083.png)
 
 
 - 주문을 받은 직후 결제를 요청하도록 처리

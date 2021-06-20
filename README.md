@@ -247,25 +247,25 @@ http POST localhost:8081/rents userid=200 bookid=2   #Fail
 대여(rent)가 완료된 후에 청구(billing)으로 이를 알려주는 행위와 반납(return)이 완료된 후에 청구(billing)으로 이를 알려주는 행위는 비 동기식으로 처리해서 대여와 반납이 블로킹 되지 않아도 처리 한다.
  
 - 대여가 완료되었다(returned)는 도메인 이벤트를 카프카로 송출한다(Publish)
- 
-![image](https://user-images.githubusercontent.com/73699193/98075277-6f478400-1eaf-11eb-88c8-2b4a7736e56b.png)
 
+![image](https://user-images.githubusercontent.com/84724396/122671181-68803e00-d200-11eb-9503-11f20445a3f0.png)
 
-- 대리점(store)에서는 결제승인(payCompleted) 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다.
-- 주문접수(OrderReceive)는 송출된 결제승인(payCompleted) 정보를 store의 Repository에 저장한다.:
+- 청구(billing)에서는 대여 완료(rented) 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다.
+- 대여 완료된 (rented) 정보를 billing의 Repository에 저장한다.
  
 ![image](https://user-images.githubusercontent.com/73699193/98076059-e0d40200-1eb0-11eb-94ad-c4ea114cb3aa.png)
 
 
-대리점(store)시스템은 주문(app)/결제(pay)와 완전히 분리되어있으며(sync transaction 없음), 이벤트 수신에 따라 처리되기 때문에, 대리점(store)이 유지보수로 인해 잠시 내려간 상태라도 주문을 받는데 문제가 없다.(시간적 디커플링):
+청구(billing)시스템은 대여(rent)/책(book)와 완전히 분리되어있으며(sync transaction 없음), 이벤트 수신에 따라 처리되기 때문에, 청구(billing)이 유지보수로 인해 잠시 내려간 상태라도 대여를 하는데 문제가 없다.(시간적 디커플링)
+
 ```
-# 대리점(store) 서비스를 잠시 내려놓음 (ctrl+c)
+#청구(billing) 서비스를 잠시 내려놓음 (ctrl+c)
 
-#주문하기(order)
-http http://localhost:8081/orders item=note30 qty=2  #Success
+#대여(rent)
+http POST localhost:8081/rents userid=300 bookid=1
 
-#주문상태 확인
-http get http://localhost:8081/orders    # 상태값이 'Shipped'이 아닌 'Payed'에서 멈춤을 확인
+#대여 상태 확인
+http GET localhost:8084/myPages    # 상태값이 'Shipped'이 아닌 'Payed'에서 멈춤을 확인
 ```
 ![image](https://user-images.githubusercontent.com/73699193/98078301-2b577d80-1eb5-11eb-9d89-7c03a3fa27dd.png)
 ```

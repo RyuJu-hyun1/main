@@ -197,37 +197,49 @@ http POST http://gateway:8080/orders item=test qty=1
 대여(rent) -> 책(book) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 
 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 
 
-- 1) 책 재고 확인 서비스를 호출하기 위하여 FeignClient를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
+- 책 재고 확인 서비스를 호출하기 위하여 FeignClient를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
 
 ![image](https://user-images.githubusercontent.com/84724396/122668480-2dc3d900-d1f3-11eb-9f30-0b0dfaa44083.png)
 
-- 2) 책 대여 요청을 받으면 책 재고 확인을 요청하도록 처리
+- 책 대여 요청을 받으면 책 재고 확인을 요청하도록 처리
 
 (rent) Rent.java (Entity)
 
 ![image](https://user-images.githubusercontent.com/84724396/122668694-3ff24700-d1f4-11eb-9130-fad3cf066dc1.png)
 
-- 3) [검증] 동기식 호출이 적용되서 Book 시스템이 장애가 나면 대여를 하지 못 한다는 것을 확인:
+- [검증1] 동기식 호출이 적용되서 Book 시스템이 장애가 나면 대여를 하지 못 한다는 것을 확인:
 
 ```
-#결제(pay) 서비스를 잠시 내려놓음 (ctrl+c)
+#book 서비스를 잠시 내려놓음 (ctrl+c)
 
-#주문하기(order)
-http http://localhost:8081/orders item=note20 qty=1   #Fail
+#대여하기(rent)
+http POST localhost:8081/rents userid=200 bookid=2   #Fail
 ```
+-------이미지 교체
 ![image](https://user-images.githubusercontent.com/73699193/98072284-04934a00-1ea9-11eb-9fad-40d3996e109f.png)
 
 ```
-#결제(pay) 서비스 재기동
-cd pay
+#book 서비스 재기동
+cd book
 mvn spring-boot:run
 
-#주문하기(order)
-http http://localhost:8081/orders item=note21 qty=2   #Success
+#대여하기(rent)
+http POST localhost:8081/rents userid=200 bookid=2   #Success
 ```
+-------이미지 교체
 ![image](https://user-images.githubusercontent.com/73699193/98074359-9f8e2300-1ead-11eb-8854-0449a65ff55c.png)
 
 
+- [검증2] 책 재고가 0이면 대여를 하지 못 한다는 비기능 요구사항 것 확인
+
+```
+#책 재고 확인
+http GET localhost:8082/books/2   #bookid=2 의 재고 0
+
+#대여하기(rent)
+http POST localhost:8081/rents userid=200 bookid=2   #Fail
+```
+-------이미지 
 
 ## 비동기식 호출 / 시간적 디커플링 / 장애격리 
 

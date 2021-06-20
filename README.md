@@ -152,16 +152,17 @@ mvn spring-boot:run
 
 ### 1. DDD 의 적용
 
-각 서비스내에 도출된 Aggregate는 Entity로 선언하여 PRE/POST PERSIST/UPDATE를 반영하였으며, Repository Pattern을 적용하여 ACID를 구현하였다.
+각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다
 
-![image](https://user-images.githubusercontent.com/73699193/98182350-e2e99f80-1f48-11eb-825c-da099795fe29.png)
+![image](https://user-images.githubusercontent.com/84724396/122665595-154bc280-d1e3-11eb-8470-c4c534ef169d.png)
 
 Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양한 데이터소스 유형 (RDB or NoSQL) 에 대한 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring Data REST 의 RestRepository 를 적용하였다
 
-![image](https://user-images.githubusercontent.com/73699193/98182486-378d1a80-1f49-11eb-8e14-0de7296978b5.png)
+![image](https://user-images.githubusercontent.com/84724396/122665647-65c32000-d1e3-11eb-95f2-0d39e9413c90.png)
 
 
-## 2. 폴리글랏 퍼시스턴스
+### 2. 폴리글랏 퍼시스턴스
+
 H2 DB인 book, billing과 달리 rent는 Hsql으로 구현하여 MSA간 서로 다른 종류의 DB간에도 문제 없이 동작하여 다형성을 만족하는지 확인하였다. 
 
 rent의 pom.xml 설정
@@ -173,7 +174,7 @@ book, billing의 pom.xml 설정
 ![image](https://user-images.githubusercontent.com/84724396/122640113-9bf79580-d138-11eb-952c-b7bd8207f966.png)
 
 
-## 3. Gateway 적용
+### 3. Gateway 적용
 
 gateway > applitcation.yml 설정
 

@@ -207,7 +207,7 @@ http POST http://gateway:8080/orders item=test qty=1
 
 ![image](https://user-images.githubusercontent.com/84724396/122668694-3ff24700-d1f4-11eb-9130-fad3cf066dc1.png)
 
-- [검증1] 동기식 호출이 적용되서 Book 시스템이 장애가 나면 대여를 하지 못 한다는 것을 확인:
+- [검증1] 동기식 호출이 적용되서 Book 시스템이 장애가 나면 대여를 하지 못 한다는 것을 확인
 
 ```
 #book 서비스를 잠시 내려놓음 (ctrl+c)
@@ -230,7 +230,7 @@ http POST localhost:8081/rents userid=200 bookid=2   #Success
 ![image](https://user-images.githubusercontent.com/73699193/98074359-9f8e2300-1ead-11eb-8854-0449a65ff55c.png)
 
 
-- [검증2] 책 재고가 0이면 대여를 하지 못 한다는 비기능 요구사항 것 확인
+- [검증2] 책 재고가 0이면 대여를 하지 못 한다는 비기능 요구사항 확인
 
 ```
 #책 재고 확인
@@ -244,9 +244,9 @@ http POST localhost:8081/rents userid=200 bookid=2   #Fail
 ## 비동기식 호출 / 시간적 디커플링 / 장애격리 
 
 
-결제(pay)가 이루어진 후에 대리점(store)으로 이를 알려주는 행위는 비 동기식으로 처리하여 대리점(store)의 처리를 위하여 결제주문이 블로킹 되지 않아도록 처리한다.
+대여(rent)가 완료된 후에 청구(billing)으로 이를 알려주는 행위와 반납(return)이 완료된 후에 청구(billing)으로 이를 알려주는 행위는 비 동기식으로 처리해서 대여와 반납이 블로킹 되지 않아도 처리 한다.
  
-- 결제승인이 되었다(payCompleted)는 도메인 이벤트를 카프카로 송출한다(Publish)
+- 대여가 완료되었다(returned)는 도메인 이벤트를 카프카로 송출한다(Publish)
  
 ![image](https://user-images.githubusercontent.com/73699193/98075277-6f478400-1eaf-11eb-88c8-2b4a7736e56b.png)
 
